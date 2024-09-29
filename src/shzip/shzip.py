@@ -33,11 +33,14 @@ def main():
 	directories_to_create = []
 
 	# Determine which paths have to be archived
-	# for path in paths:
-		# if os.path.isdir(path)
+	for path in arguments.paths:
+		# For files, add file to archive and parent directory to directories
+		if os.path.isfile(path):
+			# Append file to archive
+			files_to_archive.append(path)
 
-	files_to_archive = arguments.paths
-	
+			# Append parent directory
+			directories_to_create.append(os.path.dirname(path))
 
 	# Open the output file for writing
 	with open(arguments.file, 'wb') as output_file:
@@ -45,7 +48,7 @@ def main():
 		output_file.write(f'#!{arguments.shell}\n'.encode())
 
 		# Determine target path from environment
-		output_file.write(f'[[ -z "$TARGET" ]] && _TARGET="$TARGET" || _TARGET={shlex.quote(arguments.target)}\n'.encode())
+		output_file.write(f'test -z "$TARGET" && _TARGET={shlex.quote(arguments.target)} || _TARGET="$TARGET"\n'.encode())
 
 		# Create all directories
 		for directory_to_create in sorted(directories_to_create, key=len):
@@ -61,7 +64,15 @@ def main():
 
 			# Open the file for reading
 			with open(file_to_archive, "rb") as file:
-				output_file.write(file.read().replace(b"\\", b"\\\\"))
+				# Fetch file contents
+				contents = file.read()
+
+			# Escape special characters
+			for character in [b"\\", b"$"]:
+				contents = contents.replace(character, b"\\" + character)
+
+			# Write the contents
+			output_file.write(contents)
 
 			# Write the termination string
 			output_file.write(f'\n{termination_magic}\n'.encode())
