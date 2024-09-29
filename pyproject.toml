@@ -1,0 +1,36 @@
+[project]
+name = "shzip"
+version = "0.1.0"
+requires-python = ">= 3.4"
+description = "TBD"
+readme = "README.md"
+license = {file = "LICENSE"}
+maintainers = [{name = "Nadav Tasher", email = "hey@nadav.app"}]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["runtime", "typing", "typecheck"]
+
+[project.urls]
+Homepage = "https://github.com/NadavTasher/Shzip"
+
+[options]
+exclude = "tests"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.distutils.bdist_wheel]
+universal = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.yapf]
+based_on_style = "google"
+column_limit = 400
+indent_width = 4
