@@ -118,6 +118,9 @@ def main():
         with open(arguments.files_from, "r") as files_from_file:
             paths_to_process |= set(files_from_file.read().splitlines())
 
+    # Make sure there are paths to process
+    assert paths_to_process, "Refusing to create empty archive"
+
     # Change directory if required before any further processing
     if arguments.directory:
         os.chdir(arguments.directory)
@@ -147,7 +150,7 @@ def main():
             termination_magic = os.urandom(10).hex()
 
             # Write the dumping function
-            output_file.write(f'head -c -1 | {filter_command} > $TARGET/{shlex.quote(file_to_dump.lstrip("./"))} << {termination_magic}\n'.encode())
+            output_file.write(f'( head -c -1 | {filter_command} ) > $TARGET/{shlex.quote(file_to_dump.lstrip("./"))} << {termination_magic}\n'.encode())
 
             # Escape special characters
             for character in [b"\\", b"$"]:
