@@ -61,7 +61,7 @@ def process_file(path: str, arguments: argparse.Namespace) -> typing.Tuple[bytes
         decompression_command = "xz -d"
 
         # Compress the contents using xz
-        contents = subprocess.run(["xz"], input=contents, capture_output=True, check=True).stdout
+        contents = subprocess.run(["xz", "-e9"], input=contents, capture_output=True, check=True).stdout
     
     # Will the input be encoded using base64?
     if arguments.ascii:
